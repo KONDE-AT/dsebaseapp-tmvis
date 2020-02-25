@@ -81,7 +81,7 @@ declare function tmvis:header($node as node(), $model as map (*)){
             <br />
             <a>
               <i class="fas fa-info" title="Top Topic Words" data-toggle="modal" data-target="#exampleModal"/>
-            </a>
+            </a> | 
             <a href="#chart">
               <i class="fas fa-chart-bar"/>
             </a>
