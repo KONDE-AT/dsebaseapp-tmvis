@@ -10,6 +10,9 @@ add this repo to your dsebaseapp project,
 -   throug symlink `ln -s ../location/to/tmvis-roep tmvis`
 -   or by simply copy and paste the content of this repo into a `tmvis` collection in your dsebaseapp
 
+* add `import module namespace tmvis="https://digital-archiv/ns/tmvis" at "../tmvis/tmvis.xqm";
+` to `dsebaseapp/modules/view.xql`
+
 See e.g. [dhd-boas-app](https://github.com/dhd-boas/dhd-boas-app) as reference implementation
 
 ## config
