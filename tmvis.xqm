@@ -2,7 +2,6 @@ xquery version "3.1";
 module namespace tmvis="https://digital-archiv/ns/tmvis";
 
 import module namespace app="http://www.digital-archiv.at/ns/templates" at "../modules/app.xql";
-import module namespace config="http://www.digital-archiv.at/ns/config" at "../modules/config.xqm";
 
 declare namespace tei="http://www.tei-c.org/ns/1.0";
 
@@ -12,6 +11,7 @@ declare variable $tmvis:topic-model := doc($app:indices||'/topic-model.xml')//te
 declare function tmvis:list-topics($node as node(), $model as map (*)){
   for $x in $tmvis:topic-model//tei:div[@n]
     let $topic-n := data($x/@n)
+    let $topic-id := substring-after($topic-n, ' ')
     let $words := for $w in $x//tei:item
       return <li>{$w}</li>
 
@@ -19,7 +19,11 @@ declare function tmvis:list-topics($node as node(), $model as map (*)){
       <div class="col">
         <div class="card">
           <div class="card-header">
-            <h2>{$topic-n}</h2>
+            <h2>
+              <a href="topic-document.html?topic={$topic-id}">
+                {$topic-n}
+              </a>
+            </h2>
           </div>
           <div class="card-body">
             <ul>{$words}</ul>
@@ -36,10 +40,42 @@ declare function tmvis:nav($node as node(), $model as map (*)){
         Topic Modelling
       </a>
       <div class="dropdown-menu">
-        <a class="dropdown-item" href="../tmvis/doc-topic-matrix.html">Doc-Topic-Matrix</a>
         <a class="dropdown-item" href="../tmvis/topics.html">Topics</a>
+        <a class="dropdown-item" href="../tmvis/doc-topic-matrix.html">Doc-Topic-Matrix</a>
       </div>
     </li>
 
   return $menu
+};
+
+declare function tmvis:topic-words($topic-id as xs:string){
+  let $words := $tmvis:topic-model//tei:div[@n=$topic-id]//tei:item
+  return $words
+};
+
+
+declare function tmvis:topic-first-word($node as node(), $model as map (*)){
+  let $topic := request:get-parameter("topic", "0")
+  let $topic-id := "topic "||$topic
+  for $x in subsequence(tmvis:topic-words($topic-id), 1, 1)
+    return $x/text()
+};
+
+declare function tmvis:topic-top-words($node as node(), $model as map (*)){
+  let $topic := request:get-parameter("topic", "0")
+  let $topic-id := "topic "||$topic
+  for $x in tmvis:topic-words($topic-id)
+    return <li>{$x/text()}</li>
+};
+
+declare function tmvis:topic-document($node as node(), $model as map (*)){
+  let $topic := request:get-parameter("topic", "0")
+  let $topic-id := "topic "||$topic
+  for $x in $tmvis:topic-model//tei:table[@n=$topic-id]//tei:row
+  return
+    <tr>
+      <td>{$x//tei:cell[3]/text()}</td>
+      <td>{$x//tei:cell[1]/text()}</td>
+      <td>{$x/tei:cell[2]/text()*1000}</td>
+    </tr>
 };
