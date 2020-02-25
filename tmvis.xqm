@@ -7,6 +7,10 @@ declare namespace tei="http://www.tei-c.org/ns/1.0";
 
 declare variable $tmvis:topic-model := doc($app:indices||'/topic-model.xml')//tei:TEI;
 
+declare function tmvis:count-topics(){
+  let $topics := count($tmvis:topic-model//tei:div[@n])
+  return $topics -1
+};
 
 declare function tmvis:list-topics($node as node(), $model as map (*)){
   for $x in $tmvis:topic-model//tei:div[@n]
@@ -53,12 +57,44 @@ declare function tmvis:topic-words($topic-id as xs:string){
   return $words
 };
 
-
-declare function tmvis:topic-first-word($node as node(), $model as map (*)){
+declare function tmvis:header($node as node(), $model as map (*)){
   let $topic := request:get-parameter("topic", "0")
   let $topic-id := "topic "||$topic
-  for $x in subsequence(tmvis:topic-words($topic-id), 1, 1)
-    return $x/text()
+  let $first-word := tmvis:topic-words($topic-id)[1]/text()
+  let $prev-nr := if (number($topic) = 0) then false() else "topic-document.html?topic="||number($topic) - 1
+  let $next-nr :=  if (number($topic) >= tmvis:count-topics()) then false() else "topic-document.html?topic="||number($topic) + 1
+  let $prev := if ($prev-nr) then
+    <h1><a href="{$prev-nr}"><i class="fas fa-chevron-left" title="prev"/></a></h1>
+      else ''
+  let $next := if ($next-nr) then
+    <h1><a href="{$next-nr}"><i class="fas fa-chevron-right" title="next"/></a></h1>
+      else ''
+  let $header :=
+    <div class="card-header">
+      <div class="row">
+        <div class="col-md-2">
+          {$prev}
+        </div>
+        <div class="col-md-8">
+          <h2>
+            {$first-word}
+            <br />
+            <a>
+              <i class="fas fa-info" title="Top Topic Words" data-toggle="modal" data-target="#exampleModal"/>
+            </a>
+            <a href="#chart">
+              <i class="fas fa-chart-bar"/>
+            </a>
+          </h2>
+        </div>
+          <div class="col-md-2">
+            {$next}
+          </div>
+
+      </div>
+    </div>
+  return
+    $header
 };
 
 declare function tmvis:topic-top-words($node as node(), $model as map (*)){
