@@ -1,4 +1,4 @@
-# dsebaseapp-netvis
+# dsebaseapp-tmvis
 
 a [dsebaseapp](https://github.com/KONDE-AT/dsebaseapp) module to visualize the results of a topic model. Be aware, this package DOES NOT do any topic modelling.
 
@@ -6,8 +6,8 @@ a [dsebaseapp](https://github.com/KONDE-AT/dsebaseapp) module to visualize the r
 
 add this repo to your dsebaseapp project,
 
--   either as submodule `git add submodule https://github.com/KONDE-AT/dsebaseapp-tmvis.git tmvis`
--   throug symlink `ln -s ../location/to/netvis-repo tmvis`
+-   either as submodule `git submodule add https://github.com/KONDE-AT/dsebaseapp-tmvis.git tmvis`
+-   throug symlink `ln -s ../location/to/tmvis-roep tmvis`
 -   or by simply copy and paste the content of this repo into a `tmvis` collection in your dsebaseapp
 
 See e.g. [dhd-boas-app](https://github.com/dhd-boas/dhd-boas-app) as reference implementation
